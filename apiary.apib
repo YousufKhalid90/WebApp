@@ -1,0 +1,954 @@
+FORMAT: 1A
+HOST: https://api.example.com
+
+
+# eccomerce
+
+
+
+# Clothing Store API
+
+## Products [/products]
+
+### Get All Products [GET]
+
++ Response 200 (application/json)
+
+    + Headers
+                X-RateLimit-Limit: 1000
+                X-RateLimit-Remaining: 999
+        
+    + Body
+            [
+              {
+                "product_id": 123,
+                "name": "Men's Blue Denim Jacket",
+                "description": "A stylish denim jacket for men, made with high-quality denim fabric and designed for comfort and durability.",
+                "brand": "Levi's",
+                "category": "Jackets",
+                "price": 89.99,
+                "color": "Blue",
+                "sizes": [
+                  "S",
+                  "M",
+                  "L",
+                  "XL",
+                  "XXL"
+                ],
+                "image_url": "https://example.com/images/mens-denim-jacket.jpg",
+                "rating": 4.5,
+                "reviews": [
+                  {
+                    "user_id": 456,
+                    "username": "johndoe",
+                    "rating": 4,
+                    "comment": "I love this jacket! It fits well and looks great.",
+                    "date": "2023-03-09"
+                  },
+                  {
+                    "user_id": 789,
+                    "username": "janedoe",
+                    "rating": 5,
+                    "comment": "This jacket is amazing! I get compliments every time I wear it.",
+                    "date": "2023-03-08"
+                  }
+                ]
+              }
+            ]
+            
+### Get a Specific Product [GET /products/{id}]
+
+Retrieves information about a specific product.
+
++ Parameters
+
+    + id (required, number) ... The ID of the product to retrieve.
+
++ Request
+
+    + Headers
+
+            Authorization: Bearer {access_token}
+
++ Response 200 (application/json)
+
+    + Body
+
+            {
+              "product_id": 123,
+              "name": "Men's Blue Denim Jacket",
+              "description": "A stylish denim jacket for men, made with high-quality denim fabric and designed for comfort and durability.",
+              "brand": "Levi's",
+              "category": "Jackets",
+              "price": 89.99,
+              "color": "Blue",
+              "sizes": [
+                "S",
+                "M",
+                "L",
+                "XL",
+                "XXL"
+              ],
+              "image_url": "https://example.com/images/mens-denim-jacket.jpg",
+              "rating": 4.5,
+              "reviews": [
+                {
+                  "user_id": 456,
+                  "username": "johndoe",
+                  "rating": 4,
+                  "comment": "I love this jacket! It fits well and looks great.",
+                  "date": "2023-03-09"
+                },
+                {
+                  "user_id": 789,
+                  "username": "janedoe",
+                  "rating": 5,
+                  "comment": "This jacket is amazing! I get compliments every time I wear it.",
+                  "date": "2023-03-08"
+                }
+              ]
+            }
+
++ Response 404 (application/json)
+
+    + Body
+
+            {
+              "message": "Product not found"
+            }
+            
+## Categories [/categories]           
+###Retrieves a list of all available categories for products.
+
++ Request
+
+    + Headers
+
+            Authorization: Bearer {access_token}
+
++ Response 200 (application/json)
+
+    + Body
+
+            [
+              {
+                "category_id": 1,
+                "name": "Men's Clothing"
+              },
+              {
+                "category_id": 2,
+                "name": "Women's Clothing"
+              },
+              {
+                "category_id": 3,
+                "name": "Accessories"
+              }
+            ]
+
++ Response 401 (application/json)
+
+    + Body
+
+            {
+              "message": "Unauthorized"
+            }
+            
+            
+
+## Products by Category [/categories/{id}/products]
+
+### Get Products by Category [GET]
+
+Retrieves a list of all products under a specific category.
+
++ Parameters
+    + id (required, number, `1`) ... The ID of the category to retrieve products for.
+
++ Request
+
+    + Headers
+
+            Authorization: Bearer {access_token}
+
++ Response 200 (application/json)
+
+    + Body
+
+            [   
+                {
+                "product_id": 1,
+                "name": "Men's T-Shirt",                
+                "description": "A comfortable t-shirt for men",                
+                "price": 19.99,                
+                "image_url": "https://example.com/images/t-shirt.jpg" 
+                }, 
+                
+                { 
+                "product_id": 2,
+                "name": "Men's Jeans",                
+                "description": "A pair of comfortable jeans for men",                
+                "price": 49.99,                
+                "image_url": "https://example.com/images/jeans.jpg"
+                }            
+            ]
+
++ Response 404 (application/json)
+
+    + Body
+
+            {
+              "message": "Category not found"
+            }
+            
+ 
+## Cart [/cart]
+
+### Get Current Shopping Cart [GET]            
+Retrieves the customer's current shopping cart.
+
++ Request
+
+    + Headers
+
+            Authorization: Bearer {access_token}
+
++ Response 200 (application/json)
+
+    + Body
+
+            {
+              "cart_id": 123,
+              "items": [
+                {
+                  "product_id": 1,
+                  "name": "Men's T-Shirt",
+                  "description": "A comfortable t-shirt for men",
+                  "price": 19.99,
+                  "quantity": 2,
+                  "image_url": "https://example.com/images/t-shirt.jpg"
+                },
+                {
+                  "product_id": 2,
+                  "name": "Men's Jeans",
+                  "description": "A pair of comfortable jeans for men",
+                  "price": 49.99,
+                  "quantity": 1,
+                  "image_url": "https://example.com/images/jeans.jpg"
+                }
+              ],
+              "total": 89.97
+            }
+
+
+
++ Response 404 (application/json)
+
+    + Body
+
+            {
+              "message": "Shopping cart not found"
+            }
+            
+            
+            
+            
+            
+## Cart [/cart/{cart_id}]
+
+### Add Item to specific shopping Cart [POST] else only cart
+
+Adds a new item to the customer's shopping cart.
+
++ Request
+
+    + Headers
+
+            Authorization: Bearer {access_token}
+            Content-Type: application/json
+
+    + Body
+
+            {
+              "product_id": 3,
+              "quantity": 1
+            }
+
++ Response 201 (application/json)
+
+    + Body
+
+            {
+              "cart_id": 123,
+              "items": [
+                {
+                  "product_id": 1,
+                  "name": "Men's T-Shirt",
+                  "description": "A comfortable t-shirt for men",
+                  "price": 19.99,
+                  "quantity": 2,
+                  "image_url": "https://example.com/images/t-shirt.jpg"
+                },
+                {
+                  "product_id": 3,
+                  "name": "Men's Hoodie",
+                  "description": "A warm hoodie for men",
+                  "price": 39.99,
+                  "quantity": 1,
+                  "image_url": "https://example.com/images/hoodie.jpg"
+                }
+              ],
+              "total": 59.98
+            }
+
++ Response 400 (application/json)
+
+    + Body
+
+            {
+              "message": "Invalid request data"
+            }
+
++ Response 401 (application/json)
+
+    + Body
+
+            {
+              "message": "Unauthorized"
+            }
+
++ Response 404 (application/json)
+
+    + Body
+
+            {
+              "message": "Shopping cart not found"
+            }
+            
+
+
+### Delete Item from Shopping Cart [DELETE /items/{id}]
+
+Deletes an item from the customer's shopping cart by ID.
+
++ Parameters
+
+    + id (required, string, `1234`) ... The ID of the item to be deleted from the shopping cart.
+
++ Request
+
+    + Headers
+
+            Authorization: Bearer {access_token}
+
++ Response 201
+
+    + Body
+
+            {
+              "message": "Deleted
+            }
+
++ Response 401 (application/json)
+
+    + Body
+
+            {
+              "message": "Unauthorized"
+            }
+
++ Response 404 (application/json)
+
+    + Body
+
+            {
+              "message": "Shopping cart item not found"
+            }
+
+## Orders [/orders]
+
+### Get Customer's Past Orders [GET]
+
+Returns a list of the customer's past orders.
+
++ Request
+
+    + Headers
+
+            Authorization: Bearer {access_token}
+
++ Response 200 (application/json)
+
+    + Body
+
+            {
+              "orders": [
+                {
+                  "id": "1",
+                  "status": "delivered",
+                  "items": [
+                    {
+                      "product_id": "100",
+                      "name": "Men's T-Shirt",
+                      "quantity": 2,
+                      "price": 20.99
+                    },
+                    {
+                      "product_id": "101",
+                      "name": "Women's Blouse",
+                      "quantity": 1,
+                      "price": 45.00
+                    }
+                  ],
+                  "total": 86.98,
+                  "date": "2022-02-01T09:30:00Z"
+                },
+                {
+                  "id": "2",
+                  "status": "shipped",
+                  "items": [
+                    {
+                      "product_id": "200",
+                      "name": "Men's Hoodie",
+                      "quantity": 1,
+                      "price": 49.99
+                    }
+                  ],
+                  "total": 49.99,
+                  "date": "2022-01-15T13:45:00Z"
+                }
+              ]
+            }
+
++ Response 401 (application/json)
+
+    + Body
+
+            {
+              "message": "Unauthorized"
+            }
+
+
+
+## Wishlist [/wishlist]
+
+### Get Customer's Wishlist [GET]
+
+Returns the customer's current wishlist.
+
++ Request
+
+    + Headers
+
+            Authorization: Bearer {access_token}
+
++ Response 200 (application/json)
+
+    + Body
+
+            {
+              "wishlist": [
+                {
+                  "id": "100",
+                  "name": "Men's T-Shirt",
+                  "price": 20.99,
+                  "image_url": "https://example.com/images/t-shirt.jpg",
+                  "product_url": "https://example.com/products/100"
+                },
+                {
+                  "id": "101",
+                  "name": "Women's hoodie
+                  "price": 45.00,
+                  "image_url": "https://example.com/images/blouse.jpg",
+                  "product_url": "https://example.com/products/101"
+                }
+              ]
+            }
+
+
+
+
+### Add Item to Wishlist [POST]
+
+Adds an item to the customer's wishlist.
+
++ Request
+
+    + Headers
+
+            Authorization: Bearer {access_token}
+            Content-Type: application/json
+
+    + Body
+
+            {
+              "id": "100",
+              "add_to_wishlist": true
+            }
+
+        
++ Response 201 (application/json)
+
+    + Body
+
+            {
+              "message": "Item added to wishlist successfully"
+            }
+
+
+
+
+### Remove Item from Wishlist [DELETE]
+
+Removes an item from the customer's wishlist.
+
++ Request
+
+    + Headers
+
+            Authorization: Bearer {access_token}
+            Content-Type: application/json
+
+    + Body
+
+            {
+              "id": "100",
+              "remove_from_wishlist": true
+            }
+
+      
++ Response 200 (application/json)
+
+    + Body
+
+            {
+              "message": "Item removed from wishlist successfully"
+            }
+
+
+
+
+## Customer Profile [/customer/{id}/profile]
+
+### Retrieve Customer Profile [GET]
+
+
++ Parameters
+    + id (required, string, `1`) - The ID of the customer whose profile information to retrieve.
+
++ Response 200 (application/json)
+
+    + Body
+
+            {
+                "id": "1234",
+                "name": "John Doe",
+                "email": "johndoe@example.com",
+                "address_id": "5678"
+            }
+
+  
+###update customer profile [PUT]
+
+Removes an item from the customer's wishlist.
+
+
++ Parameters
+    + id (required, string, `12`) - The ID of the customer whose profile information to update
++ Request
+
+    + Headers
+
+            Authorization: Bearer {access_token}
+            Content-Type: application/json
+
+    + Body
+
+            {
+              "name": "Jane Doe",
+              "email": "janedoe@example.com"
+            }
+
+      
++ Response 200 (application/json)
+
+    + Body
+
+            {
+                "id": "1234",
+                "name": "Jane Doe",
+                "email": "janedoe@example.com",
+                "address_id": "5678"
+            } 
+  
+            
+## Customer Profile [/customer/{id}/address]
+### Retrieve Customer Address [GET]
+
+
++ Parameters
+    + id (required, string, `1234`) - The ID of the customer whose profile information to retrieve.
+
++ Response 200 (application/json)
+
+    + Body
+
+            {
+                 "id": "5678",
+                "street": "123 Main St",
+                "city": "Anytown",
+                "state": "CA",
+                "zip": "12345"
+            }
+
+
+## Checkout [/API/checkout]
+
+### Initiate Checkout [POST]
+
+This endpoint is used to initiate the checkout process and create a new order in the system.
+
++ Request (application/json)
+
+    + Body
+
+            {
+                "customer_id": 12345,
+                "items": [
+                    {
+                        "product_id": 1,
+                        "quantity": 2
+                    },
+                    {
+                        "product_id": 2,
+                        "quantity": 1
+                    }
+                ],
+                "shipping_address": {
+                    "name": "John Doe",
+                    "street_address": "123 Main St",
+                    "city": "Anytown",
+                    "state": "CA",
+                    "zip_code": "12345"
+                },
+                "billing_address": {
+                    "name": "John Doe",
+                    "street_address": "123 Main St",
+                    "city": "Anytown",
+                    "state": "CA",
+                    "zip_code": "12345"
+                }
+            }
+
++ Response 201 (application/json)
+
+    + Headers
+    
+            Location: /API/orders/67890
+        
+    + Body
+
+            {
+                "order_id": 67890,
+                "status": "Pending",
+                "customer_id": 12345,
+                "items": [
+                    {
+                        "product_id": 1,
+                        "quantity": 2
+                    },
+                    {
+                        "product_id": 2,
+                        "quantity": 1
+                    }
+                ],
+                "shipping_address": {
+                    "name": "John Doe",
+                    "street_address": "123 Main St",
+                    "city": "Anytown",
+                    "state": "CA",
+                    "zip_code": "12345"
+                },
+                "billing_address": {
+                    "name": "John Doe",
+                    "street_address": "123 Main St",
+                    "city": "Anytown",
+                    "state": "CA",
+                    "zip_code": "12345"
+                },
+                "total": 99.99
+            }  
+
+
+### Retrieve CurrentOrder [GET]
+
+Use this endpoint to retrieve the customer's current order for checkout.
+
++ Response 200 (application/json)
+
+        {
+            "order_id": 123,
+            "customer_id": 456,
+            "status": "pending",
+            "items": [
+                {
+                    "product_id": 789,
+                    "quantity": 2
+                },
+                {
+                    "product_id": 987,
+                    "quantity": 1
+                }
+            ],
+            "total_price": 50.0
+        }
+
++ Response 404
+
+    + Headers
+
+            Content-Type: text/plain
+
+    + Body
+
+            {
+                "message " : " Order not found."
+            }
+            
+            
+
+## Checkout [/API/checkout/payment]
+### Initiate Payment [POST]
+
++ Request (application/json)
+    
+    + Body
+    
+            {
+                "payment_method": "credit_card",
+                "card_number": "1234567812345678",
+                "expiry_date": "12/24",
+                "cvv": "123",
+                "billing_address": {
+                "street": "123 Main St.",
+                "city": "Anytown",
+                "state": "CA",
+                "zip": "12345",
+                "country": "USA"
+            }
+        
+
++ Response 200 (application/json)
+
+    + Body
+        
+                {
+                    "order_id": 1234,
+                    "status": "paid"
+                }
+
++ Response 400 (application/json)
+
+        {
+            "message": "Invalid payment information"
+        }
+        
+        
+## Products Collection [/api/seller/products]
+
+### List all products [GET]
+
++ Response 200 (application/json)
+  
+  + Headers
+  
+          X-Total-Count: 100
+
+  + Body
+
+          [
+              {
+                  "id": 1,
+                  "name": "sunglasses",
+                  "description": "Rayban sunglass",
+                  "price": 19.99,
+                  "quantity": 100,
+                  "created_at": "2023-03-11T10:23:32Z",
+                  "updated_at": "2023-03-11T10:23:32Z"
+              },
+              {
+                  "id": 2,
+                  "name": "jeans",
+                  "description": "denim jeans ",
+                  "price": 29.99,
+                  "quantity": 50,
+                  "created_at": "2023-03-11T10:23:32Z",
+                  "updated_at": "2023-03-11T10:23:32Z"
+              },
+              {
+                  "id": 3,
+                  "name": "hoodie",
+                  "description": "This is product warm hoddie",
+                  "price": 39.99,
+                  "quantity": 20,
+                  "created_at": "2023-03-11T10:23:32Z",
+                  "updated_at": "2023-03-11T10:23:32Z"
+              }
+          ]
+         
+         
+## Product [/api/seller/products/{id}]
+
+### Retrieve a Product [GET]
+
++ Parameters
+    + id (required, number, `1`) ... The ID of the product to retrieve
+
++ Response 200 (application/json)
+
+        
+    + Body
+            {
+                "id": 1,
+                "name": "Product A",
+                "description": "This is Product A",
+                "price": 10.99,
+                "seller_id": 123,
+                "category_id": 456,
+                "created_at": "2023-03-11T10:00:00Z",
+                "updated_at": "2023-03-11T10:30:00Z"
+            }
+
++ Response 404 (application/json)
+   
+    + Body
+            {
+                "message": "Product not found"
+            }
+            
+            
+            
+            
+
+
+### Update a Product [PUT]
+
++ Request (application/json)
+
+    + Attributes
+        + name: Nike Running Shoes (string)
+        + price: 99.99 (number)
+        + description: Lightweight and comfortable running shoes (string)
+        + category: Shoes (string)
+
++ Response 200 (application/json)
+
+    + Body
+    
+        {
+            "id": 123,
+            "name": "Nike Running Shoes",
+            "price": 99.99,
+            "description": "Lightweight and comfortable running shoes",
+            "category": "Shoes"
+        }
+
++ Response 404 (application/json)
+
+    + Body
+    
+            {
+                "message": "Product with ID 123 not found"
+            }
+            
+            
+            
+## Seller Shipping Rates Collection [/api/seller/shipping]
+
+### List Seller Shipping Rates [GET]
+
++ Response 200 (application/json)
+
+   
+    + Body
+
+            [
+                {
+                    "id": "1",
+                    "name": "Standard Shipping",
+                    "price": 5.99
+                },
+                {
+                    "id": "2",
+                    "name": "Express Shipping",
+                    "price": 9.99
+                }
+            ]
+
+
+
+## Update Shipping Rate [PUT]
+
+Update the details of a specific shipping rate.
+
++ Request (application/json)
+
+    + Headers
+    
+        Authorization: Bearer {access_token}
+        
+    + Body
+    
+        {
+            "rate_name": "Standard Shipping",
+            "rate_description": "Delivered in 3-5 business days",
+            "rate_price": 9.99
+        }
+
++ Response 200 (application/json)
+    + Body
+        {
+            "id": 1234,
+            "seller_id": 5678,
+            "rate_name": "Standard Shipping",
+            "rate_description": "Delivered in 3-5 business days",
+            "rate_price": 9.99,
+            "created_at": "2023-03-11T10:30:00Z",
+            "updated_at": "2023-03-11T11:30:00Z"
+        }
+
++ Response 401 (application/json)
+
+    + Body
+        {
+            "error": "Unauthorized: authentication failed"
+        }
+
++ Response 404 (application/json)
+
+    + Body
+        {
+            "error": "Shipping rate not found"
+        }
+
++ Response 500 (application/json)
+
+    + Body
+        {
+            "error": "Internal server error"
+        }
+        
+        
+        
+## Payment History [/api/seller/payments]
+
+### List All Payments [GET]
+
++ Response 200 (application/json)
+
+    + Attributes (array)
+
+        + (object)
+            + id: 123 (number, required) - The unique identifier for the payment.
+            + amount: 100.0 (number, required) - The amount of the payment.
+            + date: 2022-03-12T14:30:00Z (string, required) - The date and time the payment was made.
+            + method: "Credit Card" (string, required) - The payment method used.
